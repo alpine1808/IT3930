@@ -1,6 +1,5 @@
 package com.apartment.IT3930.model.role;
 
-import com.apartment.IT3930.model.user.UserRole;
 import jakarta.persistence.*;
 
 @Entity
@@ -11,24 +10,26 @@ public class Role implements RoleInterface {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, unique = true)
-    private UserRole name;
+    @Column(nullable = false, unique = true, length = 20)
+    private RoleName name;
 
     public Role() {}
 
-    public Role(UserRole name) {
+    public Role(RoleName name) {
         this.name = name;
     }
 
+    @Override
     public Long getId() {
         return id;
     }
 
-    public UserRole getName() {
+    @Override
+    public RoleName getName() {
         return name;
     }
 
-    public void setName(UserRole name) {
+    public void setName(RoleName name) {
         this.name = name;
     }
 }

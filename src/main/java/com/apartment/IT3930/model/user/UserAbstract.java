@@ -1,5 +1,7 @@
 package com.apartment.IT3930.model.user;
 import com.apartment.IT3930.model.role.Role;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
 import java.util.Set;
 import java.util.HashSet;
@@ -8,6 +10,16 @@ import java.util.HashSet;
 @Table(name = "users")
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "user_type", discriminatorType = DiscriminatorType.INTEGER)
+@JsonTypeInfo(
+    use = JsonTypeInfo.Id.NAME,
+    include = JsonTypeInfo.As.PROPERTY,
+    property = "type"
+)
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = Admin.class, name = "admin"),
+    @JsonSubTypes.Type(value = User.class, name = "user"),
+    @JsonSubTypes.Type(value = Staff.class, name = "staff")
+})
 public abstract class UserAbstract implements UserInterface{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
