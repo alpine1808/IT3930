@@ -1,4 +1,5 @@
 package com.apartment.IT3930.model.user;
+import com.apartment.IT3930.model.role.Role;
 import jakarta.persistence.*;
 import java.util.Set;
 import java.util.HashSet;
@@ -7,7 +8,7 @@ import java.util.HashSet;
 @Table(name = "users")
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "user_type", discriminatorType = DiscriminatorType.INTEGER)
-public class UserAbstract implements UserInterface{
+public abstract class UserAbstract implements UserInterface{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,14 +22,16 @@ public class UserAbstract implements UserInterface{
     @Column(nullable = false, length = 60)
     private String password;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
-    @Enumerated(EnumType.STRING)
-    @Column(name = "role_name")
-    private final Set<UserRole> roles = new HashSet<>();
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "user_roles",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private final Set<Role> roles = new HashSet<>();
 
     @Override
-    public Set<UserRole> getUserRole() {
+    public Set<Role> getUserRole() {
         return this.roles;
     }
 
@@ -42,7 +45,7 @@ public class UserAbstract implements UserInterface{
         return this.displayName;
     }
 
-    public void addRole(UserRole role) {
+    public void addRole(Role role) {
         this.roles.add(role);
     }
 
