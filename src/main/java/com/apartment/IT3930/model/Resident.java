@@ -15,13 +15,11 @@ public class Resident {
     @JoinColumn(name = "apartment_id", nullable = false)
     private Apartment apartment;
 
-    @Column(nullable = false, length = 100)
-    private String name;
-
-    @Column(length = 20)
-    private String phone;
-
     public Resident() {
+    }
+
+    public Resident(Apartment apartment) {
+        this.apartment = apartment;
     }
 
     public Long getResidentId() {
@@ -38,21 +36,5 @@ public class Resident {
 
     public void setApartment(Apartment apartment) {
         this.apartment = apartment;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
     }
 }

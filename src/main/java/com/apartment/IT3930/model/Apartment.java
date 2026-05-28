@@ -29,6 +29,12 @@ public class Apartment {
     public Apartment() {
     }
 
+    public Apartment(User user, BigDecimal area, Integer floor) {
+        this.user = user;
+        this.area = area;
+        this.floor = floor;
+    }
+
     public Long getApartmentId() {
         return apartmentId;
     }

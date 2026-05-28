@@ -1,8 +1,7 @@
 package com.apartment.IT3930.model;
 
 import jakarta.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table(name = "Roles")
@@ -11,42 +10,55 @@ public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "role_id")
-    private Long roleId;
+    private Long id;
 
-    @Column(name = "role_name", unique = true, nullable = false, length = 50)
-    private String roleName;
+    @Column(name = "role_name", nullable = false, unique = true, length = 50)
+    private String name;
 
     @ManyToMany(mappedBy = "roles")
-    private Set<User> users = new HashSet<>();
+    private List<User> users;
 
     public Role() {
+        super();
     }
 
-    public Role(String roleName) {
-        this.roleName = roleName;
+    public Role(String name) {
+        this.name = name;
     }
 
-    public Long getRoleId() {
-        return roleId;
+    public Role(Long id, String name, List<User> users) {
+        super();
+        this.id = id;
+        this.name = name;
+        this.users = users;
     }
 
-    public void setRoleId(Long roleId) {
-        this.roleId = roleId;
+    @Override
+    public String toString() {
+        return name;
     }
 
-    public String getRoleName() {
-        return roleName;
+    public Long getId() {
+        return id;
     }
 
-    public void setRoleName(String roleName) {
-        this.roleName = roleName;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public Set<User> getUsers() {
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public List<User> getUsers() {
         return users;
     }
 
-    public void setUsers(Set<User> users) {
+    public void setUsers(List<User> users) {
         this.users = users;
     }
 }
