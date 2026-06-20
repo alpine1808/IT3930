@@ -26,6 +26,9 @@ public class Account {
     @Column(nullable = false)
     private Role role;
 
+    @Column(name = "verification_token")
+    private String verificationToken;
+
     public Account(){
         super();
     }
@@ -84,5 +87,13 @@ public class Account {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public String getVerificationToken() {
+        return verificationToken;
+    }
+
+    public void setVerificationToken(String verificationToken) {
+        this.verificationToken = verificationToken;
     }
 }

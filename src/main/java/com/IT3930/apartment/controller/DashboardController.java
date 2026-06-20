@@ -40,4 +40,39 @@ public class DashboardController {
         model.addAttribute("role", "Owner");
         return "dashboard";
     }
+
+    @GetMapping("/admin/accounts")
+    public String manageAccounts(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
+        model.addAttribute("account", userDetails.getAccount());
+        model.addAttribute("role", "Admin");
+        return "manage_accounts";
+    }
+
+    @GetMapping("/admin/apartments")
+    public String manageApartments(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
+        model.addAttribute("account", userDetails.getAccount());
+        model.addAttribute("role", "Admin");
+        return "manage_apartments";
+    }
+
+    @GetMapping("/admin/settings")
+    public String systemSettings(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
+        model.addAttribute("account", userDetails.getAccount());
+        model.addAttribute("role", "Admin");
+        return "settings";
+    }
+
+    @GetMapping("/owner/apartments")
+    public String ownerApartments(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
+        model.addAttribute("account", userDetails.getAccount());
+        model.addAttribute("role", "Owner");
+        return "owner_apartments";
+    }
+
+    @GetMapping("/owner/profile")
+    public String ownerProfile(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
+        model.addAttribute("account", userDetails.getAccount());
+        model.addAttribute("role", "Owner");
+        return "owner_profile";
+    }
 }

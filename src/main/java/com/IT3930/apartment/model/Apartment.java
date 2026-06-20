@@ -1,6 +1,7 @@
 package com.IT3930.apartment.model;
 import jakarta.persistence.*;
 import com.IT3930.apartment.model.account.Owner;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,9 +24,11 @@ public class Apartment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
+    @JsonIgnore
     private Owner owner;
 
     @OneToMany(mappedBy = "apartment", fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Resident> residents = new ArrayList<>();
 
     public Apartment(){
