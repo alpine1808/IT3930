@@ -22,6 +22,7 @@ public class SecurityConfig {
                 .requestMatchers("/login", "/verify", "/css/**", "/js/**", "/images/**").permitAll()
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .requestMatchers("/api/owner/**").hasRole("OWNER")
+                .requestMatchers("/api/staff/**").hasRole("STAFF")
                 .requestMatchers("/api/accounts/**").authenticated()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/staff/**").hasRole("STAFF")

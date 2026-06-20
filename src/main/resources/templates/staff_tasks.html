@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>My Tasks</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        .modal-content.wide {
+            max-width: 650px;
+        }
+    </style>
+</head>
+<body class="dashboard-page">
+
+    <!-- Top navigation -->
+    <nav class="navbar">
+        <div class="navbar__brand">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 20h9"/>
+                <path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838.838-2.872a2 2 0 0 1 .506-.854z"/>
+            </svg>
+            <span>My Tasks</span>
+        </div>
+        <div class="navbar__right">
+            <button class="btn-logout" onclick="window.location.href='/dashboard'">
+                <span>Back to Dashboard</span>
+            </button>
+        </div>
+    </nav>
+
+    <main class="dashboard-content">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h2>My Tasks</h2>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 50px;">ID</th>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="tasksTableBody">
+                    <tr><td colspan="4" style="text-align: center;">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        let tasks = [];
+
+        window.onload = () => {
+            fetchTasks();
+        };
+
+        async function fetchTasks() {
+            try {
+                const res = await fetch('/api/staff/tasks');
+                if(res.ok) {
+                    tasks = await res.json();
+                    const tbody = document.getElementById('tasksTableBody');
+                    tbody.innerHTML = '';
+                    
+                    if (tasks.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="4" style="text-align: center;">No tasks assigned.</td></tr>';
+                        return;
+                    }
+
+                    tasks.forEach(task => {
+                        let statusColor = task.status === 'Completed' ? 'var(--accent-success)' : 'var(--text-muted)';
+                        if (task.status === 'Pending') statusColor = 'var(--accent-warning)';
+                        if (task.status === 'In Progress') statusColor = 'var(--accent-primary)';
+
+                        tbody.innerHTML += `
+                            <tr>
+                                <td>${task.id}</td>
+                                <td style="font-weight: 600;">${task.title}</td>
+                                <td>${task.description || ''}</td>
+                                <td style="color: ${statusColor}; font-weight: 500;">${task.status}</td>
+                            </tr>
+                        `;
+                    });
+                } else {
+                    document.getElementById('tasksTableBody').innerHTML = '<tr><td colspan="4" style="text-align: center; color: red;">Failed to load tasks.</td></tr>';
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+    </script>
+</body>
+</html>

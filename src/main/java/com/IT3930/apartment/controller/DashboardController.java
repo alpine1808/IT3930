@@ -75,4 +75,11 @@ public class DashboardController {
         model.addAttribute("role", "Owner");
         return "owner_profile";
     }
+
+    @GetMapping("/staff/tasks")
+    public String staffTasks(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
+        model.addAttribute("account", userDetails.getAccount());
+        model.addAttribute("role", "Staff");
+        return "staff_tasks";
+    }
 }
