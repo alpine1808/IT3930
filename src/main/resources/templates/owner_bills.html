@@ -89,11 +89,12 @@
             text-align: left;
             padding: 0.75rem;
             border-bottom: 1px solid #eee;
+            color: black;
         }
         .items-table th {
             background: #f8fafc;
             font-weight: 500;
-            color: #64748b;
+            color: black;
         }
         .no-bills {
             text-align: center;
@@ -163,7 +164,6 @@
         <div class="filter-section">
             <label for="monthFilter" style="font-weight: 500;">Filter by Month:</label>
             <select id="monthFilter" onchange="filterBills()">
-                <option value="all">All Months</option>
                 <!-- Options populated by JS -->
             </select>
         </div>
@@ -185,7 +185,7 @@
                 allBills = await response.json();
                 
                 populateMonthFilter();
-                renderBills(allBills);
+                filterBills();
             } catch (error) {
                 console.error(error);
                 document.getElementById('billsContainer').innerHTML = `<div class="no-bills">Error loading bills. Please try again later.</div>`;
@@ -224,8 +224,8 @@
 
         function filterBills() {
             const selectedMonth = document.getElementById('monthFilter').value;
-            let filtered = allBills;
-            if (selectedMonth !== 'all') {
+            let filtered = [];
+            if (selectedMonth) {
                 filtered = allBills.filter(bill => bill.month && bill.month.toString().startsWith(selectedMonth));
             }
             
@@ -294,7 +294,7 @@
                         </table>
                     `;
                 } else {
-                    itemsHtml = `<p style="color: #666; margin-top: 1rem; font-size: 0.875rem;">No item usage recorded for this bill.</p>`;
+                    itemsHtml = `<p style="color: black; margin-top: 1rem; font-size: 0.875rem;">No item usage recorded for this bill.</p>`;
                 }
 
                 return `

@@ -53,6 +53,10 @@ public class OwnerController {
             List<com.IT3930.apartment.model.bill.Bill> bills = billRepository.findByApartmentIn(apartments);
             List<java.util.Map<String, Object>> result = new java.util.ArrayList<>();
 
+            List<com.IT3930.apartment.model.bill.BillUse> allUses = bills.isEmpty() ? new java.util.ArrayList<>() : billUseRepository.findByBillIn(bills);
+            java.util.Map<Long, List<com.IT3930.apartment.model.bill.BillUse>> usesByBill = allUses.stream()
+                    .collect(java.util.stream.Collectors.groupingBy(u -> u.getBill().getId()));
+
             for (com.IT3930.apartment.model.bill.Bill bill : bills) {
                 java.util.Map<String, Object> billMap = new java.util.HashMap<>();
                 billMap.put("billId", bill.getId());
@@ -63,7 +67,7 @@ public class OwnerController {
                 billMap.put("isDone", bill.isDone());
                 billMap.put("month", bill.getMonth());
 
-                List<com.IT3930.apartment.model.bill.BillUse> uses = billUseRepository.findByBill(bill);
+                List<com.IT3930.apartment.model.bill.BillUse> uses = usesByBill.getOrDefault(bill.getId(), new java.util.ArrayList<>());
                 List<java.util.Map<String, Object>> items = new java.util.ArrayList<>();
                 for (com.IT3930.apartment.model.bill.BillUse use : uses) {
                     java.util.Map<String, Object> itemMap = new java.util.HashMap<>();

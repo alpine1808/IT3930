@@ -18,20 +18,31 @@ public class Task {
     private String description;
 
     @Column(nullable = false)
-    private String status;
+    private String type; // "STATIC" or "DYNAMIC"
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "staff_id")
+    @Column(name = "is_done")
+    private Boolean isDone;
+
+    @Column(nullable = false)
+    private String status = "2"; // Default value to satisfy DB constraint
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "task_staff",
+        joinColumns = @JoinColumn(name = "task_id"),
+        inverseJoinColumns = @JoinColumn(name = "staff_id")
+    )
     @JsonIgnore
-    private Staff staff;
+    private java.util.List<Staff> staffs = new java.util.ArrayList<>();
 
     public Task() {}
 
-    public Task(String title, String description, String status, Staff staff) {
+    public Task(String title, String description, String type, Boolean isDone, java.util.List<Staff> staffs) {
         this.title = title;
         this.description = description;
-        this.status = status;
-        this.staff = staff;
+        this.type = type;
+        this.isDone = isDone;
+        this.staffs = staffs;
     }
 
     public Long getId() { return id; }
@@ -43,9 +54,15 @@ public class Task {
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
 
+    public String getType() { return type; }
+    public void setType(String type) { this.type = type; }
+
+    public Boolean getIsDone() { return isDone; }
+    public void setIsDone(Boolean isDone) { this.isDone = isDone; }
+
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
 
-    public Staff getStaff() { return staff; }
-    public void setStaff(Staff staff) { this.staff = staff; }
+    public java.util.List<Staff> getStaffs() { return staffs; }
+    public void setStaffs(java.util.List<Staff> staffs) { this.staffs = staffs; }
 }

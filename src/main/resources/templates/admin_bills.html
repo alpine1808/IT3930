@@ -94,8 +94,9 @@
             text-align: left;
             padding: 0.75rem;
             border-bottom: 1px solid #eee;
+            color: black;
         }
-        .items-table th { background: #f8fafc; font-weight: 500; color: #64748b; }
+        .items-table th { background: #f8fafc; font-weight: 500; color: black; }
         .no-bills { text-align: center; padding: 3rem; color: #666; background: white; border-radius: 8px; border: 1px dashed #ccc; }
     </style>
 </head>
@@ -140,7 +141,6 @@
             <div class="filter-left">
                 <label for="monthFilter" style="font-weight: 500;">Filter by Month:</label>
                 <select id="monthFilter" onchange="filterBills()">
-                    <option value="all">All Months</option>
                 </select>
                 <button class="btn-primary" style="background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; display: none;" id="deleteAllBtn" onclick="deleteAllInMonth()">Delete All in Month</button>
             </div>
@@ -243,7 +243,7 @@
                 }));
                 
                 populateMonthFilter();
-                renderBills(allBills);
+                filterBills();
             } catch (error) {
                 console.error(error);
                 document.getElementById('billsContainer').innerHTML = `<div class="no-bills">Error loading bills. Please try again later.</div>`;
@@ -282,10 +282,10 @@
 
         function filterBills() {
             const selectedMonth = document.getElementById('monthFilter').value;
-            let filtered = allBills;
+            let filtered = [];
             const deleteBtn = document.getElementById('deleteAllBtn');
 
-            if (selectedMonth !== 'all') {
+            if (selectedMonth) {
                 filtered = allBills.filter(bill => bill.month && bill.month.toString().startsWith(selectedMonth));
                 deleteBtn.style.display = 'inline-block';
             } else {
@@ -319,7 +319,7 @@
 
         async function deleteAllInMonth() {
             const selectedMonth = document.getElementById('monthFilter').value;
-            if (selectedMonth === 'all') return;
+            if (!selectedMonth) return;
             if (!confirm(`Are you sure you want to delete ALL bills for ${formatMonthYear(selectedMonth)}? This cannot be undone.`)) return;
 
             try {
@@ -528,7 +528,7 @@
                         </table>
                     `;
                 } else {
-                    itemsHtml = `<p style="color: #666; margin-top: 1rem; font-size: 0.875rem;">No items recorded.</p>`;
+                    itemsHtml = `<p style="color: black; margin-top: 1rem; font-size: 0.875rem;">No items recorded.</p>`;
                 }
 
                 return `

@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 @Table(name = "staff")
 @PrimaryKeyJoinColumn(name = "account_id")
 public class Staff extends Account {
-    @OneToMany(mappedBy = "staff", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "staffs", fetch = FetchType.LAZY)
     @com.fasterxml.jackson.annotation.JsonIgnore
     private java.util.List<com.IT3930.apartment.model.Task> tasks = new java.util.ArrayList<>();
 

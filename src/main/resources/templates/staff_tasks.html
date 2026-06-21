@@ -5,14 +5,12 @@
     <title>My Tasks</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <style>
-        .modal-content.wide {
-            max-width: 650px;
-        }
+        .list-section { margin-bottom: 2rem; }
+        .list-section h3 { margin-bottom: 1rem; border-bottom: 2px solid var(--border); padding-bottom: 0.5rem; }
     </style>
 </head>
 <body class="dashboard-page">
 
-    <!-- Top navigation -->
     <nav class="navbar">
         <div class="navbar__brand">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -33,26 +31,38 @@
             <h2>My Tasks</h2>
         </div>
 
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th style="width: 50px;">ID</th>
-                        <th>Title</th>
-                        <th>Description</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody id="tasksTableBody">
-                    <tr><td colspan="4" style="text-align: center;">Loading...</td></tr>
-                </tbody>
-            </table>
+        <div class="list-section">
+            <h3 style="color: var(--accent-primary)">Static Tasks (Ongoing)</h3>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Title</th><th>Description</th></tr></thead>
+                    <tbody id="staticTasksBody"><tr><td colspan="2" style="text-align: center;">Loading...</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="list-section">
+            <h3 style="color: var(--accent-warning)">Dynamic Tasks (Not Done)</h3>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Title</th><th>Description</th></tr></thead>
+                    <tbody id="dynamicNotDoneTasksBody"><tr><td colspan="2" style="text-align: center;">Loading...</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="list-section">
+            <h3 style="color: var(--accent-success)">Dynamic Tasks (Done)</h3>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Title</th><th>Description</th></tr></thead>
+                    <tbody id="dynamicDoneTasksBody"><tr><td colspan="2" style="text-align: center;">Loading...</td></tr></tbody>
+                </table>
+            </div>
         </div>
     </main>
 
     <script>
-        let tasks = [];
-
         window.onload = () => {
             fetchTasks();
         };
@@ -61,35 +71,35 @@
             try {
                 const res = await fetch('/api/staff/tasks');
                 if(res.ok) {
-                    tasks = await res.json();
-                    const tbody = document.getElementById('tasksTableBody');
-                    tbody.innerHTML = '';
+                    const tasks = await res.json();
                     
-                    if (tasks.length === 0) {
-                        tbody.innerHTML = '<tr><td colspan="4" style="text-align: center;">No tasks assigned.</td></tr>';
-                        return;
-                    }
+                    const staticTasks = tasks.filter(t => t.type === 'STATIC');
+                    const dynamicNotDone = tasks.filter(t => t.type === 'DYNAMIC' && !t.isDone);
+                    const dynamicDone = tasks.filter(t => t.type === 'DYNAMIC' && t.isDone);
 
-                    tasks.forEach(task => {
-                        let statusColor = task.status === 'Completed' ? 'var(--accent-success)' : 'var(--text-muted)';
-                        if (task.status === 'Pending') statusColor = 'var(--accent-warning)';
-                        if (task.status === 'In Progress') statusColor = 'var(--accent-primary)';
-
-                        tbody.innerHTML += `
-                            <tr>
-                                <td>${task.id}</td>
-                                <td style="font-weight: 600;">${task.title}</td>
-                                <td>${task.description || ''}</td>
-                                <td style="color: ${statusColor}; font-weight: 500;">${task.status}</td>
-                            </tr>
-                        `;
-                    });
+                    renderTable('staticTasksBody', staticTasks);
+                    renderTable('dynamicNotDoneTasksBody', dynamicNotDone);
+                    renderTable('dynamicDoneTasksBody', dynamicDone);
                 } else {
-                    document.getElementById('tasksTableBody').innerHTML = '<tr><td colspan="4" style="text-align: center; color: red;">Failed to load tasks.</td></tr>';
+                    document.getElementById('staticTasksBody').innerHTML = '<tr><td colspan="3" style="text-align: center; color: red;">Failed to load tasks.</td></tr>';
                 }
             } catch (e) {
                 console.error(e);
             }
+        }
+
+        function renderTable(tbodyId, taskList) {
+            const tbody = document.getElementById(tbodyId);
+            if (taskList.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="2" style="text-align: center;">No tasks found.</td></tr>';
+                return;
+            }
+            tbody.innerHTML = taskList.map(task => `
+                <tr>
+                    <td style="font-weight: 600;">${task.title}</td>
+                    <td>${task.description || ''}</td>
+                </tr>
+            `).join('');
         }
     </script>
 </body>

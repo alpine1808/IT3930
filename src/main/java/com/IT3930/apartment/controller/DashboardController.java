@@ -62,6 +62,13 @@ public class DashboardController {
         return "settings";
     }
 
+    @GetMapping("/admin/tasks")
+    public String adminTasks(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
+        model.addAttribute("account", userDetails.getAccount());
+        model.addAttribute("role", "Admin");
+        return "admin_tasks";
+    }
+
     @GetMapping("/admin/bills")
     public String adminBills(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
         model.addAttribute("account", userDetails.getAccount());

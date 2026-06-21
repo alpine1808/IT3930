@@ -259,4 +259,60 @@ public class AdminController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+    // --- TASKS ---
+    @Autowired
+    private com.IT3930.apartment.service.TaskService taskService;
+
+    @GetMapping("/tasks")
+    public ResponseEntity<?> getAllTasks() {
+        try {
+            List<com.IT3930.apartment.dto.TaskDTO> tasks = taskService.getAllTasks()
+                    .stream()
+                    .map(com.IT3930.apartment.dto.TaskDTO::new)
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(tasks);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/tasks")
+    public ResponseEntity<?> createTask(@RequestBody com.IT3930.apartment.dto.TaskDTO taskDTO) {
+        try {
+            com.IT3930.apartment.model.Task task = new com.IT3930.apartment.model.Task();
+            task.setTitle(taskDTO.getTitle());
+            task.setDescription(taskDTO.getDescription());
+            task.setType(taskDTO.getType());
+            task.setIsDone(taskDTO.getIsDone());
+            com.IT3930.apartment.model.Task created = taskService.createTask(task, taskDTO.getStaffIds());
+            return ResponseEntity.ok(new com.IT3930.apartment.dto.TaskDTO(created));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/tasks/{id}")
+    public ResponseEntity<?> updateTask(@PathVariable Long id, @RequestBody com.IT3930.apartment.dto.TaskDTO taskDTO) {
+        try {
+            com.IT3930.apartment.model.Task task = new com.IT3930.apartment.model.Task();
+            task.setTitle(taskDTO.getTitle());
+            task.setDescription(taskDTO.getDescription());
+            task.setType(taskDTO.getType());
+            task.setIsDone(taskDTO.getIsDone());
+            com.IT3930.apartment.model.Task updated = taskService.updateTask(id, task, taskDTO.getStaffIds());
+            return ResponseEntity.ok(new com.IT3930.apartment.dto.TaskDTO(updated));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/tasks/{id}")
+    public ResponseEntity<?> deleteTask(@PathVariable Long id) {
+        try {
+            taskService.deleteTask(id);
+            return ResponseEntity.ok("Task deleted successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }
