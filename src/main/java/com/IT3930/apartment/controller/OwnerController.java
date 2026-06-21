@@ -33,4 +33,53 @@ public class OwnerController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @Autowired
+    private com.IT3930.apartment.repository.BillRepository billRepository;
+
+    @Autowired
+    private com.IT3930.apartment.repository.BillUseRepository billUseRepository;
+
+    @GetMapping("/bills")
+    public ResponseEntity<?> getMyBills(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        try {
+            Long ownerId = userDetails.getAccount().getId();
+            List<com.IT3930.apartment.model.Apartment> apartments = accountService.getApartmentsByOwner(ownerId);
+            
+            if (apartments.isEmpty()) {
+                return ResponseEntity.ok(java.util.Collections.emptyList());
+            }
+
+            List<com.IT3930.apartment.model.bill.Bill> bills = billRepository.findByApartmentIn(apartments);
+            List<java.util.Map<String, Object>> result = new java.util.ArrayList<>();
+
+            for (com.IT3930.apartment.model.bill.Bill bill : bills) {
+                java.util.Map<String, Object> billMap = new java.util.HashMap<>();
+                billMap.put("billId", bill.getId());
+                billMap.put("apartmentId", bill.getApartment().getId());
+                billMap.put("apartmentName", bill.getApartment().getName());
+                billMap.put("apartmentFloor", bill.getApartment().getFloor());
+                billMap.put("cost", bill.getCost());
+                billMap.put("isDone", bill.isDone());
+                billMap.put("month", bill.getMonth());
+
+                List<com.IT3930.apartment.model.bill.BillUse> uses = billUseRepository.findByBill(bill);
+                List<java.util.Map<String, Object>> items = new java.util.ArrayList<>();
+                for (com.IT3930.apartment.model.bill.BillUse use : uses) {
+                    java.util.Map<String, Object> itemMap = new java.util.HashMap<>();
+                    itemMap.put("itemName", use.getBillItem().getName());
+                    itemMap.put("quantity", use.getQuantity());
+                    items.add(itemMap);
+                }
+                billMap.put("totalItems", items.size());
+                billMap.put("items", items);
+
+                result.add(billMap);
+            }
+
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

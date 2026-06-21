@@ -62,6 +62,20 @@ public class DashboardController {
         return "settings";
     }
 
+    @GetMapping("/admin/bills")
+    public String adminBills(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
+        model.addAttribute("account", userDetails.getAccount());
+        model.addAttribute("role", "Admin");
+        return "admin_bills";
+    }
+
+    @GetMapping("/admin/bill-items")
+    public String adminBillItems(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
+        model.addAttribute("account", userDetails.getAccount());
+        model.addAttribute("role", "Admin");
+        return "admin_bill_items";
+    }
+
     @GetMapping("/owner/apartments")
     public String ownerApartments(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
         model.addAttribute("account", userDetails.getAccount());
@@ -81,5 +95,12 @@ public class DashboardController {
         model.addAttribute("account", userDetails.getAccount());
         model.addAttribute("role", "Staff");
         return "staff_tasks";
+    }
+
+    @GetMapping("/owner/bills")
+    public String ownerBills(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
+        model.addAttribute("account", userDetails.getAccount());
+        model.addAttribute("role", "Owner");
+        return "owner_bills";
     }
 }
